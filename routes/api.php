@@ -17,19 +17,27 @@ use App\Http\Controllers\PostController;
 */
 
 // Test route to verify API is working
-Route::get('test', function () {
+Route::get('/test', function () {
     return response()->json(['message' => 'API routes are working!']);
 });
 
 // Authentication routes
-Route::post('auth/register', [AuthController::class, 'register']);
-Route::post('auth/login', [AuthController::class, 'login']);
-Route::post('auth/logout', [AuthController::class, 'logout'])->middleware('auth:api');
-Route::post('auth/refresh', [AuthController::class, 'refresh'])->middleware('auth:api');
-Route::get('auth/user-profile', [AuthController::class, 'userProfile'])->middleware('auth:api');
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:api');
+Route::post('/refresh', [AuthController::class, 'refresh'])->middleware('auth:api');
+Route::get('/user-profile', [AuthController::class, 'userProfile'])->middleware('auth:api');
+
+// Public password reset routes
+Route::post('/forgot-password', [App\Http\Controllers\UserController::class, 'forgotPassword']);
+Route::post('/change-password', [App\Http\Controllers\UserController::class, 'changePassword']);
 
 // Posts routes (protected by JWT authentication)
-/*Route::middleware('auth:api')->group(function () {
+Route::middleware('auth:api')->group(function () {
+    Route::get('users', [App\Http\Controllers\UserController::class, 'index']);
+    Route::get('users/{id}', [App\Http\Controllers\UserController::class, 'show']);
+    Route::put('users/{id}', [App\Http\Controllers\UserController::class, 'update']);
+
     Route::get('/posts', function () {
         $user = auth()->user();
         if (!$user || !$user->can('posts.list')) {
@@ -92,5 +100,6 @@ Route::get('auth/user-profile', [AuthController::class, 'userProfile'])->middlew
         }
         $post->delete();
         return response()->json(['message' => 'Post deleted']);
-    }); 
-}*/ 
+        // End of delete route
+    });
+});

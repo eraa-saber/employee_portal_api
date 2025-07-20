@@ -246,7 +246,7 @@ const Login = () => {
             </div>
 
             <div className="login-links-row">
-              <a href="/resetpassword" className="login-link">نسيت كلمة السر ؟</a>
+              <a href="/forgot-password" className="login-link">نسيت كلمة السر ؟</a>
               <a href="#" className="login-link">إعادة إرسال بريد التحقق</a>
             </div>
             
