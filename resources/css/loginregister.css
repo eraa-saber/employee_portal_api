@@ -1,0 +1,61 @@
+/* Checkbox group for EmailNotifications and TermsAndConditions */
+.checkbox-group {
+  display: flex;
+  align-items: center;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  gap: 10px;
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: #a14a76;
+}
+
+.checkbox-group input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: #d72660;
+  margin-right: 8px;
+  border-radius: 5px;
+  border: 1.5px solid #fcb1e0;
+  box-shadow: 0 1px 4px #ffd6ec33;
+  cursor: pointer;
+}
+
+.checkbox-group label {
+  margin-bottom: 0;
+  font-size: 1.05rem;
+  color: #a14a76;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+/* Style for clickable DocURL link (if shown) */
+.docurl-link {
+  color: #d72660;
+  text-decoration: underline;
+  font-weight: 500;
+  cursor: pointer;
+  font-size: 1.01rem;
+  margin-top: 4px;
+  margin-bottom: 4px;
+}
+
+/* Insurance number and National ID fields */
+.form-group input[name="insuranceNo"],
+.form-group input[name="NationalID"] {
+  letter-spacing: 1px;
+}
+
+/* Responsive: make sure the form looks good on mobile */
+@media (max-width: 500px) {
+  .login-container {
+    width: 98vw;
+    padding: 32px 6vw 32px 6vw;
+  }
+  .login-title {
+    font-size: 1.5rem;
+  }
+  .login-form {
+    gap: 18px;
+  }
+} 
