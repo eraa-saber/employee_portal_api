@@ -1,77 +1,63 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\PostController;
+use App\Http\Controllers\UserController;
+use App\Models\Post;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "api" middleware group. Make something great!
-|
-*/
+/**
+ * Handle all OPTIONS requests (for CORS preflight)
+ */
+Route::options('/{any}', function () {
+    return response('', 200)
+        ->header('Access-Control-Allow-Origin', '*')
+        ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
+        ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+})->where('any', '.*');
 
-// Test route to verify API is working
+// Test route
 Route::get('/test', function () {
     return response()->json(['message' => 'API routes are working!']);
 });
 
-// Authentication routes
+// Auth routes
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:api');
 Route::post('/refresh', [AuthController::class, 'refresh'])->middleware('auth:api');
 Route::get('/user-profile', [AuthController::class, 'userProfile'])->middleware('auth:api');
 
-// Public password reset routes
-Route::post('/forgot-password', [App\Http\Controllers\UserController::class, 'forgotPassword']);
-Route::post('/change-password', [App\Http\Controllers\UserController::class, 'changePassword']);
+// Password reset
+Route::post('/forgot-password', [UserController::class, 'forgotPassword']);
+Route::post('/change-password', [UserController::class, 'changePassword']);
 
-// Posts routes (protected by JWT authentication)
+// Protected routes
 Route::middleware('auth:api')->group(function () {
-    Route::get('users', [App\Http\Controllers\UserController::class, 'index']);
-    Route::get('users/{id}', [App\Http\Controllers\UserController::class, 'show']);
-    Route::put('users/{id}', [App\Http\Controllers\UserController::class, 'update']);
+    // User endpoints
+    Route::get('/users', [UserController::class, 'index']);
+    Route::get('/users/{id}', [UserController::class, 'show']);
+    Route::put('/users/{id}', [UserController::class, 'update']);
 
+    // Posts
     Route::get('/posts', function () {
-        $user = auth()->user();
-        if (!$user || !$user->can('posts.list')) {
-            return response()->json(['message' => 'Unauthorized'], 403);
-        }
-        return response()->json(\App\Models\Post::all());
+        return response()->json(Post::all());
     });
 
-    Route::post('/posts', function (\Illuminate\Http\Request $request) {
-        $user = auth()->user();
-        if (!$user || !$user->can('posts.add')) {
-            return response()->json(['message' => 'Unauthorized'], 403);
-        }
+    Route::post('/posts', function (Request $request) {
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'required|string',
         ]);
-        $post = \App\Models\Post::create($validated);
+        $post = Post::create($validated);
         return response()->json($post, 201);
     });
 
-    Route::get('/posts/{post}', function (\App\Models\Post $post) {
-        $user = auth()->user();
-        if (!$user || !$user->can('posts.list')) {
-            return response()->json(['message' => 'Unauthorized'], 403);
-        }
+    Route::get('/posts/{post}', function (Post $post) {
         return response()->json($post);
     });
 
-    Route::put('/posts/{post}', function (\Illuminate\Http\Request $request, \App\Models\Post $post) {
-        $user = auth()->user();
-        if (!$user || !$user->can('posts.edit')) {
-            return response()->json(['message' => 'Unauthorized'], 403);
-        }
+    Route::put('/posts/{post}', function (Request $request, Post $post) {
         $validated = $request->validate([
             'title' => 'sometimes|required|string|max:255',
             'content' => 'sometimes|required|string',
@@ -80,11 +66,7 @@ Route::middleware('auth:api')->group(function () {
         return response()->json($post);
     });
 
-    Route::patch('/posts/{post}', function (\Illuminate\Http\Request $request, \App\Models\Post $post) {
-        $user = auth()->user();
-        if (!$user || !$user->can('posts.edit')) {
-            return response()->json(['message' => 'Unauthorized'], 403);
-        }
+    Route::patch('/posts/{post}', function (Request $request, Post $post) {
         $validated = $request->validate([
             'title' => 'sometimes|required|string|max:255',
             'content' => 'sometimes|required|string',
@@ -93,13 +75,8 @@ Route::middleware('auth:api')->group(function () {
         return response()->json($post);
     });
 
-    Route::delete('/posts/{post}', function (\App\Models\Post $post) {
-        $user = auth()->user();
-        if (!$user || !$user->can('posts.delete')) {
-            return response()->json(['message' => 'Unauthorized'], 403);
-        }
+    Route::delete('/posts/{post}', function (Post $post) {
         $post->delete();
         return response()->json(['message' => 'Post deleted']);
-        // End of delete route
     });
 });
