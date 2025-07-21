@@ -34,6 +34,7 @@ Route::post('/change-password', [App\Http\Controllers\UserController::class, 'ch
 
 // Posts routes (protected by JWT authentication)
 Route::middleware('auth:api')->group(function () {
+    Route::get('requests', [App\Http\Controllers\RequestController::class, 'index']);
     Route::get('users', [App\Http\Controllers\UserController::class, 'index']);
     Route::get('users/{id}', [App\Http\Controllers\UserController::class, 'show']);
     Route::put('users/{id}', [App\Http\Controllers\UserController::class, 'update']);
