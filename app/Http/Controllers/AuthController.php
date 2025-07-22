@@ -18,11 +18,46 @@ class AuthController extends Controller
         $this->authRepository = $authRepository;
     }
 
-    public function register(RegisterRequest $request)
+    public function register(Request $request)
     {
-        $result = $this->authRepository->register($request->validated());
-        
-        return response()->json($result, 201);
+        $validator = Validator::make($request->all(), [
+            'FullName'                  => 'required|string|max:255',
+            'Email'                 => 'required|string|email|unique:users',
+            'password'              => 'required|string|min:6|confirmed',
+            'Phone'                 => 'required|string|max:20',
+            'NationalID'           => 'required|digits_between:6,20',
+            'DocURL' => 'required|file|mimes:jpg,jpeg,png|max:2048',
+            'EmailNotifications'   => 'boolean',
+            'insurranceNo'          => 'required|integer',
+            'TermsAndConditions'  => 'required|accepted'
+        ]);
+
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+        $filePath = $request->file('DocURL')->store('documents', 'public');
+        $user = User::create([
+            'FullName' => $request->FullName,
+            'Email' => $request->Email,
+            'Password' => Hash::make($request->password),
+            'Phone'    => $request->Phone,
+            'NationalID' => $request->NationalID,
+            'DocURL'     => $filePath,
+            'EmailNotifications' => $request->EmailNotifications ?? false,
+            'insurranceNo' => $request->insurranceNo,
+            'TermsAndConditions' => $request->TermsAndConditions ? 1 : 0,
+        ]);
+
+
+
+        $token = JWTAuth::fromUser($user);
+
+        return response()->json([
+            'message' => 'User registered successfully!',
+            'user'    => $user,
+            'token'   => $token
+        ], 201);
     }
 
     public function login(LoginRequest $request)

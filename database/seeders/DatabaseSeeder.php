@@ -14,10 +14,17 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // Create a user if none exist
-        if (User::count() === 0) {
+        if (User::count() === 1) {
             User::factory()->create([
-                'FullName' => 'Test User',
-                'email' => 'test@example.com',
+                'FullName' => 'Youssef Moussa',
+                'email' => 'youssef.m.moussa@gmail.com',
+                'password' => bcrypt('yourPassword123'),
+                'Phone' => '01012345678',
+                'NationalID' => 29912345678901,
+                'DocURL' => 'http://example.com/document.jpg',
+                'EmailNotifications' => true,
+                'insuranceNo' => 123456,
+                'TermsAndConditions' => 1,
             ]);
         }
 

@@ -22,14 +22,14 @@ class User extends Authenticatable implements JWTSubject
      */
     protected $fillable = [
         'FullName',
-        'email',
-        'password',
+        'Email',
+        'Password',
         'Phone',
         'NationalID',
         'DocURL',
         'EmailNotifications',
-        'insuranceNo',
-        'TermsAndConditions',
+        'insurranceNo',
+        'TermsAndConditions'
     ];
 
     /**
@@ -75,3 +75,4 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(\App\Models\Request::class);
     }
 }
+
