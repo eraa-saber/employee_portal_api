@@ -83,3 +83,5 @@ Route::middleware('auth:api')->group(function () {
     // Requests
     Route::get('/requests', [\App\Http\Controllers\RequestController::class, 'index']);
 });
+
+Route::middleware('auth:api')->post('/salary-inquiry', [\App\Http\Controllers\SalaryInquiryController::class, 'inquire']);

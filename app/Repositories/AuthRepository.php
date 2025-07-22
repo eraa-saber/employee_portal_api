@@ -50,17 +50,11 @@ class AuthRepository implements AuthRepositoryInterface
      */
     public function register(array $userData): array
     {
-        // Hash the password
         $userData['password'] = Hash::make($userData['password']);
-
-        // Create user
         $user = User::create($userData);
-
-        // Generate JWT token
         $token = JWTAuth::fromUser($user);
-
         return [
-            'message' => 'User successfully registered',
+            'message' => 'User registered successfully!',
             'user' => $user,
             'access_token' => $token,
             'token_type' => 'bearer'

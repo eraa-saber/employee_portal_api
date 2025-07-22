@@ -7,7 +7,10 @@ use Illuminate\Routing\Controller;
 use App\Repositories\Interfaces\AuthRepositoryInterface;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
-
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
 {
@@ -20,6 +23,7 @@ class AuthController extends Controller
 
     public function register(Request $request)
     {
+       
         $validator = Validator::make($request->all(), [
             'FullName'                  => 'required|string|max:255',
             'Email'                 => 'required|string|email|unique:users',
@@ -38,15 +42,15 @@ class AuthController extends Controller
         }
         $filePath = $request->file('DocURL')->store('documents', 'public');
         $user = User::create([
-            'FullName' => $request->FullName,
-            'Email' => $request->Email,
-            'Password' => Hash::make($request->password),
-            'Phone'    => $request->Phone,
-            'NationalID' => $request->NationalID,
-            'DocURL'     => $filePath,
-            'EmailNotifications' => $request->EmailNotifications ?? false,
+            'fullName' => $request->FullName,
+            'email' => $request->Email,
+            'password' => Hash::make($request->password),
+            'phone'    => $request->Phone,
+            'nationalID' => $request->NationalID,
+            'docURL'     => $filePath,
+            'emailNotifications' => $request->EmailNotifications ?? false,
             'insurranceNo' => $request->insurranceNo,
-            'TermsAndConditions' => $request->TermsAndConditions ? 1 : 0,
+            'termsAndConditions' => $request->TermsAndConditions ? 1 : 0,
         ]);
 
 
