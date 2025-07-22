@@ -18,34 +18,22 @@ class User extends Authenticatable implements JWTSubject
     /**
      * The attributes that are mass assignable.
      *
-     * @var list<string>
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
      */
-<<<<<<< HEAD
     protected $fillable = [
-        'FullName',
-        'Email',
-        'Password',
-        'Phone',
-        'NationalID',
-        'DocURL',
-        'EmailNotifications',
+        'fullName',
+        'email',
+        'password',
+        'phone',
+        'nationalID',
+        'docURL',
+        'emailNotifications',
         'insurranceNo',
-        'TermsAndConditions'
-    ];
-
-=======
-         protected $fillable = [
-         'fullName',
-         'email',
-         'password',
-         'phone',
-         'nationalID',
-         'docURL',
-         'emailNotifications',
-         'insurranceNo',
-         'termsAndConditions',
+        'termsAndConditions',
      ];
->>>>>>> 8a36f9d81d66907f439354fbd5981cb1a5e0fc0d
     /**
      * The attributes that should be hidden for serialization.
      *
