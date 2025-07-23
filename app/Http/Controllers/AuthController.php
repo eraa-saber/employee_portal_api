@@ -95,4 +95,31 @@ class AuthController extends Controller
         
         return response()->json($result);
     }
+
+    public function updateProfile(Request $request)
+{
+    $user = JWTAuth::parseToken()->authenticate();
+
+    $request->validate([
+        'phone' => 'nullable|string|max:20',
+        'insurranceNo' => 'nullable|string|max:50',
+    ]);
+
+    if ($request->has('phone')) {
+        $user->phone = $request->phone;
+    }
+
+    if ($request->has('insurranceNo')) {
+        $user->insurranceNo = $request->insurranceNo;
+    }
+
+    $user->save();
+
+    return response()->json([
+        'message' => 'تم تحديث البيانات بنجاح',
+        'user' => $user
+    ]);
+}
+
+
 }
