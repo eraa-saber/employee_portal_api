@@ -27,6 +27,7 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:api');
 Route::post('/refresh', [AuthController::class, 'refresh'])->middleware('auth:api');
 Route::get('/user-profile', [AuthController::class, 'userProfile'])->middleware('auth:api');
+Route::put('/update-profile', [AuthController::class, 'updateProfile']);
 
 // Password reset
 Route::post('/forgot-password', [UserController::class, 'forgotPassword']);

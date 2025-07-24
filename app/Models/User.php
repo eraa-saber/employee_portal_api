@@ -49,17 +49,16 @@ class User extends Authenticatable implements JWTSubject
      *
      * @return array<string, string>
      */
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'EmailNotifications' => 'boolean',
-            'TermsAndConditions' => 'boolean',
-            'NationalID' => 'integer',
-            'insuranceNo' => 'integer',
-        ];
-    }
-     
+        protected function casts(): array
+        {
+            return [
+                'emailNotifications' => 'boolean',
+                'termsAndConditions' => 'boolean',
+                'nationalID' => 'integer',
+                'insurranceNo' => 'integer',
+            ];
+        }
+
     
     public function getJWTIdentifier()
     {
