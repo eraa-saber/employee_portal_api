@@ -79,7 +79,7 @@ class AuthRepository implements AuthRepositoryInterface
      */
     public function getUser()
     {
-        return auth('api')->user();
+        return auth()->user();
     }
 
     /**
@@ -97,4 +97,4 @@ class AuthRepository implements AuthRepositoryInterface
             'user' => auth('api')->user()
         ];
     }
-} 
+}

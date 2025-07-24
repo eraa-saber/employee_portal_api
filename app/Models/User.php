@@ -31,7 +31,7 @@ class User extends Authenticatable implements JWTSubject
         'nationalID',
         'docURL',
         'emailNotifications',
-        'insurranceNo',
+        'insuranceNo', // <-- Add this line
         'termsAndConditions',
      ];
     /**
@@ -55,7 +55,7 @@ class User extends Authenticatable implements JWTSubject
                 'emailNotifications' => 'boolean',
                 'termsAndConditions' => 'boolean',
                 'nationalID' => 'integer',
-                'insurranceNo' => 'integer',
+                'insuranceNo' => 'integer',
             ];
         }
 

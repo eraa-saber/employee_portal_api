@@ -32,7 +32,7 @@ class AuthController extends Controller
             'NationalID'           => 'required|digits_between:6,20',
             'DocURL' => 'required|file|mimes:jpg,jpeg,png|max:2048',
             'EmailNotifications'   => 'boolean',
-            'insurranceNo'          => 'required|integer',
+            'insuranceNo'          => 'required|integer',
             'TermsAndConditions'  => 'required|accepted'
         ]);
 
@@ -49,7 +49,7 @@ class AuthController extends Controller
             'nationalID' => $request->NationalID,
             'docURL'     => $filePath,
             'emailNotifications' => $request->EmailNotifications ?? false,
-            'insurranceNo' => $request->insurranceNo,
+            'insuranceNo' => $request->insuranceNo, // <-- fixed here
             'termsAndConditions' => $request->TermsAndConditions ? 1 : 0,
         ]);
 
@@ -85,8 +85,18 @@ class AuthController extends Controller
     public function userProfile()
     {
         $user = $this->authRepository->getUser();
-        
-        return response()->json($user);
+        \Log::info('User profile:', $user->toArray());
+
+        return response()->json([
+            'fullName'    => $user->FullName,        // <-- Capital F
+            'phone'       => $user->Phone,           // <-- Capital P
+            'nationalID'  => $user->NationalID,      // <-- Capital N
+            'email'       => $user->email,
+            'docURL'      => $user->DocURL,          // <-- Capital D
+            'emailNotifications' => $user->EmailNotifications, // <-- Capital E
+            'insuranceNo' => $user->insuranceNo,
+            'termsAndConditions' => $user->TermsAndConditions, // <-- Capital T
+        ]);
     }
 
     public function refresh()
@@ -102,15 +112,15 @@ class AuthController extends Controller
 
     $request->validate([
         'phone' => 'nullable|string|max:20',
-        'insurranceNo' => 'nullable|string|max:50',
+        'insuranceNo' => 'nullable|string|max:50',
     ]);
 
     if ($request->has('phone')) {
         $user->phone = $request->phone;
     }
 
-    if ($request->has('insurranceNo')) {
-        $user->insurranceNo = $request->insurranceNo;
+    if ($request->has('insuranceNo')) {
+        $user->insuranceNo = $request->insuranceNo;
     }
 
     $user->save();
@@ -119,6 +129,11 @@ class AuthController extends Controller
         'message' => 'تم تحديث البيانات بنجاح',
         'user' => $user
     ]);
+}
+
+public function getUser()
+{
+    return auth()->user();
 }
 
 

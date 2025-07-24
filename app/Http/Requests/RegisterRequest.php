@@ -85,4 +85,5 @@ class RegisterRequest extends FormRequest
             'TermsAndConditions.in' => 'You must accept the terms and conditions.',
         ];
     }
-} 
+}
+\Log::info('insuranceNo:', [$request->insuranceNo]);
