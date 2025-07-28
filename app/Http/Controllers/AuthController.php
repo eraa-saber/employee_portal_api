@@ -3,45 +3,27 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\User; 
+use Illuminate\Routing\Controller;
+use App\Repositories\Interfaces\AuthRepositoryInterface;
+use App\Http\Requests\LoginRequest;
+use App\Http\Requests\RegisterRequest;
+use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Tymon\JWTAuth\Facades\JWTAuth;
-use Illuminate\Routing\Controller;
-use App\Repositories\Interfaces\AuthRepositoryInterface;
-
 
 class AuthController extends Controller
-{  protected $authRepository;
+{
+    protected $authRepository;
 
     public function __construct(AuthRepositoryInterface $authRepository)
     {
         $this->authRepository = $authRepository;
     }
 
-    
-    public function logout()
-    {
-        $this->authRepository->logout();
-        
-        return response()->json(['message' => 'Successfully logged out']);
-    }
-
-    public function userProfile()
-    {
-        $user = $this->authRepository->getUser();
-        
-        return response()->json($user);
-    }
-
-    public function refresh()
-    {
-        $result = $this->authRepository->refresh();
-        
-        return response()->json($result);
-    }
     public function register(Request $request)
     {
+       
         $validator = Validator::make($request->all(), [
             'FullName'                  => 'required|string|max:255',
             'Email'                 => 'required|string|email|unique:users',
@@ -50,7 +32,7 @@ class AuthController extends Controller
             'NationalID'           => 'required|digits_between:6,20',
             'DocURL' => 'required|file|mimes:jpg,jpeg,png|max:2048',
             'EmailNotifications'   => 'boolean',
-            'insurranceNo'          => 'required|integer',
+            'insuranceNo'          => 'required|integer',
             'TermsAndConditions'  => 'required|accepted'
         ]);
 
@@ -60,16 +42,17 @@ class AuthController extends Controller
         }
         $filePath = $request->file('DocURL')->store('documents', 'public');
         $user = User::create([
-            'FullName' => $request->FullName,
-            'Email' => $request->Email,
-            'Password' => Hash::make($request->password),
-            'Phone'    => $request->Phone,
-            'NationalID' => $request->NationalID,
-            'DocURL'     => $filePath,
-            'EmailNotifications' => $request->EmailNotifications ?? false,
-            'insurranceNo' => $request->insurranceNo,
-            'TermsAndConditions' => $request->TermsAndConditions ? 1 : 0,
+            'fullName' => $request->FullName,
+            'email' => $request->Email,
+            'password' => Hash::make($request->password),
+            'phone'    => $request->Phone,
+            'nationalID' => $request->NationalID,
+            'docURL'     => $filePath,
+            'emailNotifications' => $request->EmailNotifications ?? false,
+            'insuranceNo' => $request->insuranceNo, // <-- fixed here
+            'termsAndConditions' => $request->TermsAndConditions ? 1 : 0,
         ]);
+
 
 
 
@@ -82,17 +65,77 @@ class AuthController extends Controller
         ], 201);
     }
 
-    public function login(Request $request)
+    public function login(LoginRequest $request)
     {
-        $credentials = $request->only('email', 'password');
-
-        if (!$token = JWTAuth::attempt($credentials)) {
+        $result = $this->authRepository->login($request->validated());
+        
+        if (!$result) {
             return response()->json(['error' => 'Invalid credentials'], 401);
         }
+        
+        return response()->json($result);
+    }
+
+    public function logout()
+    {
+        $this->authRepository->logout();
+        
+        return response()->json(['message' => 'Successfully logged out']);
+    }
+
+    public function userProfile()
+    {
+        $user = $this->authRepository->getUser();
+        \Log::info('User profile:', $user->toArray());
 
         return response()->json([
-            'message' => 'Login successful',
-            'token'   => $token
+            'fullName'    => $user->FullName,        // <-- Capital F
+            'phone'       => $user->Phone,           // <-- Capital P
+            'nationalID'  => $user->NationalID,      // <-- Capital N
+            'email'       => $user->email,
+            'docURL'      => $user->DocURL,          // <-- Capital D
+            'emailNotifications' => $user->EmailNotifications, // <-- Capital E
+            'insuranceNo' => $user->insuranceNo,
+            'termsAndConditions' => $user->TermsAndConditions, // <-- Capital T
         ]);
     }
+
+    public function refresh()
+    {
+        $result = $this->authRepository->refresh();
+        
+        return response()->json($result);
+    }
+
+    public function updateProfile(Request $request)
+{
+    $user = JWTAuth::parseToken()->authenticate();
+
+    $request->validate([
+        'phone' => 'nullable|string|max:20',
+        'insuranceNo' => 'nullable|string|max:50',
+    ]);
+
+    if ($request->has('phone')) {
+        $user->phone = $request->phone;
+    }
+
+    if ($request->has('insuranceNo')) {
+        $user->insuranceNo = $request->insuranceNo;
+    }
+
+    $user->save();
+
+    return response()->json([
+        'message' => 'تم تحديث البيانات بنجاح',
+        'user' => $user
+    ]);
+}
+
+public function getUser()
+{
+    return auth()->user();
+}
+
+
 }

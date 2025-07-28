@@ -68,10 +68,12 @@ class UserController extends Controller
                 'created_at' => Carbon::now(),
             ]
         );
-        // In a real app, send email here. For now, return the token for testing.
+        // Build the reset URL (frontend should handle this route)
+        $resetUrl = "http://localhost:3000/passwordchange?token=$token&email=" . urlencode($email);
+        $message = "Click the link below to reset your password:<br><a href='$resetUrl'>$resetUrl</a>";
+        \Mail::to($email)->send(new \App\Mail\CustomTestMail($message));
         return response()->json([
-            'message' => 'Password reset link sent (token returned for testing)',
-            'token' => $token
+            'message' => 'Password reset link sent to your email.'
         ]);
     }
 

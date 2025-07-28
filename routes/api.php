@@ -26,7 +26,8 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:api');
 Route::post('/refresh', [AuthController::class, 'refresh'])->middleware('auth:api');
-Route::get('/user-profile', [AuthController::class, 'userProfile'])->middleware('auth:api');
+Route::get('/user-profile', [AuthController::class, 'userProfile']);
+Route::put('/update-profile', [AuthController::class, 'updateProfile']);
 
 // Password reset
 Route::post('/forgot-password', [UserController::class, 'forgotPassword']);
@@ -79,4 +80,10 @@ Route::middleware('auth:api')->group(function () {
         $post->delete();
         return response()->json(['message' => 'Post deleted']);
     });
+
+    // Requests
+    Route::get('/requests', [\App\Http\Controllers\RequestController::class, 'index']);
 });
+
+Route::post('/home', [\App\Http\Controllers\SalaryInquiryController::class, 'inquire']);
+Route::middleware('auth:api')->post('/profile/reset-password', [\App\Http\Controllers\ProfileController::class, 'resetPassword']);

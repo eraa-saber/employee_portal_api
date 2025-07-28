@@ -18,7 +18,10 @@ class User extends Authenticatable implements JWTSubject
     /**
      * The attributes that are mass assignable.
      *
-     * @var list<string>
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
      */
     protected $fillable = [
     'FullName',
@@ -47,17 +50,16 @@ class User extends Authenticatable implements JWTSubject
      *
      * @return array<string, string>
      */
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'EmailNotifications' => 'boolean',
-            'TermsAndConditions' => 'boolean',
-            'NationalID' => 'integer',
-            'insuranceNo' => 'integer',
-        ];
-    }
-     
+        protected function casts(): array
+        {
+            return [
+                'emailNotifications' => 'boolean',
+                'termsAndConditions' => 'boolean',
+                'nationalID' => 'integer',
+                'insuranceNo' => 'integer',
+            ];
+        }
+
     
     public function getJWTIdentifier()
     {
@@ -69,4 +71,10 @@ class User extends Authenticatable implements JWTSubject
     {
         return [];
     }
+
+    public function requests()
+    {
+        return $this->hasMany(\App\Models\Request::class);
+    }
 }
+
