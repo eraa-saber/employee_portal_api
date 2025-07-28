@@ -69,7 +69,7 @@ class AuthController extends Controller
         $result = $this->authRepository->login($request->validated());
         
         if (!$result) {
-            return response()->json(['error' => 'بيانات الدخول غير صحيحة'], 401);
+            return response()->json(['error' => 'Invalid credentials'], 401);
         }
         
         return response()->json($result);

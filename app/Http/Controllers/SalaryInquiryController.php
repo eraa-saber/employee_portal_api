@@ -17,9 +17,9 @@ class SalaryInquiryController extends Controller
 
     public function inquire(Request $request)
     {
-      
-        $user = Auth::user();
-        $result = $this->salaryInquiryService->inquire($user, $request->all());
+        $user = auth()->user();
+        $input = $request->all();
+        $result = $this->salaryInquiryService->inquire($user, $input);
         return response()->json($result);
     }
-} 
+}

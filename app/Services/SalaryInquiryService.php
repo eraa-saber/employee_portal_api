@@ -25,7 +25,7 @@ class SalaryInquiryService
 
         // Month validation (1-12 or Arabic month name)
         $arabicMonths = [
-            'يناير', 'فبراير', 'مارس', 'ابريل', 'أبريل', 'مايو', 'يونيو',
+            'يناير', 'فبراير', 'مارس', 'ابريل', 'أبريل', 'إبريل', 'مايو', 'يونيو',
             'يوليو', 'اغسطس', 'أغسطس', 'سبتمبر', 'اكتوبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'
         ];
         if (!$month || !(is_numeric($month) && $month >= 1 && $month <= 12) && !in_array($month, $arabicMonths)) {
@@ -37,6 +37,8 @@ class SalaryInquiryService
             $errors['year'] = 'يرجى اختيار السنة';
         }
         // Password validation
+        // Removed password validation as per user request
+        /*
         if (!$password || !is_string($password) || trim($password) === '') {
             $errors['password'] = 'يرجى إدخال كلمة المرور';
         }
@@ -44,11 +46,22 @@ class SalaryInquiryService
         if (empty($errors) && !Hash::check($password, $user->password)) {
             $errors['password'] = 'كلمة المرور غير صحيحة';
         }
+        */
         if (!empty($errors)) {
             return ['errors' => $errors];
         }
-        // Mock salary data
-        $salaryData = $this->salaryInquiryRepository->getSalaryFor($user->id, $month, $year);
-        return ['data' => $salaryData];
+
+        // Save the new request to the database
+        $newRequest = $this->salaryInquiryRepository->createSalaryRequest(
+            $user->id,
+            $input['month'],
+            $input['year'],
+            'pending'
+        );
+
+        return [
+            'message' => 'تم إرسال طلب المرتب بنجاح',
+            'request' => $newRequest
+        ];
     }
-} 
+}
