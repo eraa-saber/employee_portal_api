@@ -19,10 +19,10 @@ return new class extends Migration
             $table->string('Password');
             
             $table->string('Phone')->nullable();
-            $table->bigInteger('NationalID')->nullable();
+            $table->string('NationalID')->nullable();
             $table->string('DocURL')->nullable();
             $table->boolean('EmailNotifications')->default(false);
-            $table->bigInteger('insurranceNo')->nullable();
+            $table->bigInteger('insuranceNo')->nullable();
             $table->boolean('TermsAndConditions')->default(true);
 
             $table->rememberToken();

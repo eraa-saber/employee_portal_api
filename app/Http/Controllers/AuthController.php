@@ -41,17 +41,17 @@ class AuthController extends Controller
             return response()->json($validator->errors(), 422);
         }
         $filePath = $request->file('DocURL')->store('documents', 'public');
-        $user = User::create([
-            'fullName' => $request->FullName,
-            'email' => $request->Email,
-            'password' => Hash::make($request->password),
-            'phone'    => $request->Phone,
-            'nationalID' => $request->NationalID,
-            'docURL'     => $filePath,
-            'emailNotifications' => $request->EmailNotifications ?? false,
-            'insuranceNo' => $request->insuranceNo, // <-- fixed here
-            'termsAndConditions' => $request->TermsAndConditions ? 1 : 0,
-        ]);
+$user = User::create([
+    'FullName' => $request->FullName,
+    'Email' => $request->Email,
+    'Password' => Hash::make($request->password),
+    'Phone'    => $request->Phone,
+    'NationalID' => $request->NationalID,
+    'DocURL'     => $filePath,
+    'EmailNotifications' => $request->EmailNotifications ?? false,
+    'insuranceNo' => $request->insuranceNo, // keep typo consistent with DB for now
+    'TermsAndConditions' => $request->TermsAndConditions ? 1 : 0,
+]);
 
 
 

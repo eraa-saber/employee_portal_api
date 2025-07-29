@@ -18,21 +18,18 @@ class User extends Authenticatable implements JWTSubject
     /**
      * The attributes that are mass assignable.
      *
-    /**
-     * The attributes that are mass assignable.
-     *
      * @var array<int, string>
      */
     protected $fillable = [
-    'FullName',
-    'Email',
-    'Password',
-    'Phone',
-    'NationalID',
-    'DocURL',
-    'EmailNotifications',
-    'insurranceNo',
-    'TermsAndConditions'
+        'FullName',
+        'Email',
+        'Password',
+        'Phone',
+        'NationalID',
+        'DocURL',
+        'EmailNotifications',
+        'insuranceNo',
+        'TermsAndConditions'
     ];
 
     /**
@@ -41,32 +38,27 @@ class User extends Authenticatable implements JWTSubject
      * @var list<string>
      */
     protected $hidden = [
-        'password',
+        'Password',
         'remember_token',
     ];
 
     /**
-     * Get the attributes that should be cast.
+     * The attributes that should be cast.
      *
-     * @return array<string, string>
+     * @var array<string, string>
      */
-        protected function casts(): array
-        {
-            return [
-                'emailNotifications' => 'boolean',
-                'termsAndConditions' => 'boolean',
-                'nationalID' => 'integer',
-                'insuranceNo' => 'integer',
-            ];
-        }
+    protected $casts = [
+        'EmailNotifications' => 'boolean',
+        'TermsAndConditions' => 'boolean',
+        'NationalID' => 'integer',
+        'insuranceNo' => 'integer',
+    ];
 
-    
     public function getJWTIdentifier()
     {
         return $this->getKey();
     }
 
-    
     public function getJWTCustomClaims()
     {
         return [];
@@ -77,4 +69,3 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(\App\Models\Request::class);
     }
 }
-
